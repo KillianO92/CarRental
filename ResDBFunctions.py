@@ -25,9 +25,13 @@ class ResDBFunctions(db.BaseDBFunctions):
     def loadResByDates(self,sDate, eDate):
         records = super().loadRecords("SELECT * FROM Reservations WHERE StartDate = '{}' AND EndDate = '{}'".format(sDate, eDate))
         return records
+    
     def loadResByAll(self,custID, sDate, eDate):
         records = super().loadRecords("SELECT * FROM Reservations WHERE CustomerID = '{}' AND StartDate = '{}' AND EndDate = '{}'".format(custID, sDate, eDate))
         return records
+
+    def AddNewReservation(self, carID,  custID, sDate, eDate):
+        super().AddNewRecord("INSERT INTO Reservations(CarID, CustomerID, StartDate, EndDate) VALUES('{}', '{}', '{}', '{}')".format(carID, custID, sDate, eDate))
 
     def DeleteReservation(self, reservationID):
         super().loadRecords("DELETE FROM Reservations WHERE ReservationID = '{}'".format(reservationID))

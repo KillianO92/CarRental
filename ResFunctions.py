@@ -17,8 +17,8 @@ class ResFunctions(object):
             print("Did it Show for Res")
 
     def Reload(self):
-        resList = dbRes.loadAllRes()
-        self.BuildTreeView(resList)
+        results = dbRes.loadAllRes()
+        self.BuildTreeView(results)
         self.cbNames.set('')
         self.entry_StartDate.delete(0, RTK.END)
         self.entry_EndDate.delete(0, RTK.END)
@@ -52,16 +52,20 @@ class ResFunctions(object):
         #TODO: Find a better why to do the comparisons
         if custID == '' and sDate == '' and eDate=='':
             results = dbRes.loadAllRes()
-        elif custID != '':
-            results = dbRes.loadResByID(custID)
-        elif sDate != '' and eDate == '':
-           results = dbRes.loadResBySDate(sDate)
-        elif sDate == '' and eDate != '':
-           results = dbRes.loadResByEDate(eDate)
-        elif sDate != '' and eDate != '':
-           results = dbRes.loadResByDates(sDate, eDate)
         else:
-           results = dbRes.loadResByAll(custID, sDate, eDate)
+            if custID != '':
+                results = dbRes.loadResByID(custID)
+            else:
+                if sDate != '' and eDate == '':
+                    results = dbRes.loadResBySDate(sDate)
+                else: 
+                    if sDate == '' and eDate != '':
+                        results = dbRes.loadResByEDate(eDate)
+                    else:
+                        if sDate != '' and eDate != '':
+                            results = dbRes.loadResByDates(sDate, eDate)
+                        else:
+                            results = dbRes.loadResByAll(custID, sDate, eDate)
 
      
         self.BuildTreeView(results)
@@ -77,7 +81,7 @@ class ResFunctions(object):
         self.Reload()
        
 
-    def BuildTreeView(self, resResults):
+    def BuildTreeView(self, results):
         if hasattr(self, 'treeRes'):
             self.treeRes.delete(*self.treeRes.get_children())
         else:
@@ -104,7 +108,7 @@ class ResFunctions(object):
             self.treeRes.grid(row=0 ,sticky=RTK.W+RTK.E+RTK.N+RTK.S)
             self.treeRes.pack(side=RTK.LEFT, fill=RTK.BOTH, expand=1)
 
-            for index, dat in enumerate(resResults):
+            for index, dat in enumerate(results):
                 self.treeRes.insert("",index, values=(dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], dat[6]))
 
             #Add the Right Click Event 

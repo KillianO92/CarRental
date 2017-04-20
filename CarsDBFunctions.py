@@ -17,3 +17,7 @@ class CarsDBFunctions(db.BaseDBFunctions):
     def loadCarsByModel(self, model):
         records = super().loadRecords("SELECT C.CarID, M.Make, C.Model, C.Doors FROM MAKES AS M INNER JOIN CARS AS C ON M.MakeID = C.MakeID WHERE M.MODEL = '{}' ORDER BY M.Make, C.Model".format(model))
         return records
+
+    def loadCarsByID(self, carID):
+        records = super().loadRecords("SELECT M.Make, C.Model, C.Color FROM MAKES AS M INNER JOIN CARS AS C ON M.MakeID = C.MakeID WHERE C.CarID = '{}'".format(carID))
+        return records
