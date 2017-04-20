@@ -1,8 +1,10 @@
 import tkinter as RTK
 from ResDBFunctions import *
+from CustDBFunctions import *
 
 
 dbRes = ResDBFunctions()
+cstDB = CustDBFunctions()
 
 class ResFunctions(object):
     pass
@@ -17,7 +19,52 @@ class ResFunctions(object):
     def Reload(self):
         resList = dbRes.loadAllRes()
         self.BuildTreeView(resList)
+        self.cbNames.set('')
+        self.entry_StartDate.delete(0, RTK.END)
+        self.entry_EndDate.delete(0, RTK.END)
+    
         print("Reservations reloaded")
+
+    def AddNewRes(self):
+        #Get the values from the Entry Controls
+        print("Insert the Row into the databse....")
+        cus = self.customer_value.get()
+        spacePos = cus.find(' ')
+        print(cus[0:spacePos])
+        custID = cus[0:spacePos]
+        sDate = self.entry_StartDate.get()
+        eDate = self.entry_EndDate.get()
+
+        #need to add a check that the new customer is not already listed
+        dbCst.AddNewCustomer(fName, lName, phone)
+
+        self.Reload()
+
+    def FindRes(self):
+        cus = self.customer_value.get()
+        spacePos = cus.find(' ')
+        print(cus[0:spacePos])
+        custID = cus[0:spacePos]
+        sDate = self.entry_StartDate.get()
+        eDate = self.entry_EndDate.get()
+
+        print(custID, sDate, eDate)
+        #TODO: Find a better why to do the comparisons
+        if custID == '' and sDate == '' and eDate=='':
+            results = dbRes.loadAllRes()
+        elif custID != '':
+            results = dbRes.loadResByID(custID)
+        elif sDate != '' and eDate == '':
+           results = dbRes.loadResBySDate(sDate)
+        elif sDate == '' and eDate != '':
+           results = dbRes.loadResByEDate(eDate)
+        elif sDate != '' and eDate != '':
+           results = dbRes.loadResByDates(sDate, eDate)
+        else:
+           results = dbRes.loadResByAll(custID, sDate, eDate)
+
+     
+        self.BuildTreeView(results)
 
     def Delete(self):
         curItem = self.treeRes.focus()
@@ -37,13 +84,13 @@ class ResFunctions(object):
             self.treeRes = RTK.ttk.Treeview(self.dataFrame)
             self.treeRes['show']='headings'
             self.treeRes["columns"] = ("ReservationID","CarID", "CustomerID", "StartDate", "EndDate", "RealStartDate", "RealEndDate")
-            self.treeRes.column("ReservationID", width=50, anchor=RTK.W)
+            self.treeRes.column("ReservationID", width=100, anchor=RTK.W)
             self.treeRes.column("CarID", width=50, anchor=RTK.W)
             self.treeRes.column("CustomerID", width=100, anchor=RTK.W)
-            self.treeRes.column("StartDate", width=125, anchor=RTK.W)
-            self.treeRes.column("EndDate", width=125, anchor=RTK.W)
-            self.treeRes.column("RealStartDate", width=125, anchor=RTK.W)
-            self.treeRes.column("RealEndDate", width=125, anchor=RTK.W)
+            self.treeRes.column("StartDate", width=115, anchor=RTK.W)
+            self.treeRes.column("EndDate", width=115, anchor=RTK.W)
+            self.treeRes.column("RealStartDate", width=115, anchor=RTK.W)
+            self.treeRes.column("RealEndDate", width=115, anchor=RTK.W)
             #tree.heading("#0", text='ID', anchor='w')
             #tree.column("#0", anchor="w")
             self.treeRes.heading("ReservationID", text=" ReservationID", anchor=RTK.W) #, anchor=TK.W)
@@ -88,37 +135,39 @@ class ResFunctions(object):
         self.lblFrame.grid(row=1, sticky='nsew')
         self.dataFrame.grid(row=2, sticky='nsew')
 
-        self.lblLName = RTK.Label(self.lblFrame, text='Last Name')
-        self.lblFName = RTK.Label(self.lblFrame, text='First Name')
-        self.lblPhone = RTK.Label(self.lblFrame, text='Phone Number')
-        self.chkHasRes = RTK.Checkbutton(self.lblFrame, text='Has Reservations')
-        self.btnFind = RTK.Button(self.lblFrame, text='Find..')#, command=self.FindCustomer)
-        self.btnAddNew = RTK.Button(self.lblFrame, text='Add New')#, command=self.AddNewCustomer)
-        self.btnReload = RTK.Button(self.lblFrame, text='Reload Customers', command=self.Reload)
-        self.btnDelete = RTK.Button(self.lblFrame, text='Delete Customer')#, command=self.Delete)
 
+        self.lblCust = RTK.Label(self.lblFrame, text='Select Customer')
+        self.lblStartDate = RTK.Label(self.lblFrame, text='Start Date')
+        self.lblEndDate = RTK.Label(self.lblFrame, text='End Date')        
+        self.btnFind = RTK.Button(self.lblFrame, text='Find..', command=self.FindRes)
+        self.btnAddNew = RTK.Button(self.lblFrame, text='Add New', command=self.AddNewRes)
+        self.btnReload = RTK.Button(self.lblFrame, text='Reload Reservations', command=self.Reload)
+        self.btnDelete = RTK.Button(self.lblFrame, text='Delete Reservation', command=self.Delete)
 
-        self.entry_FName = RTK.Entry(self.lblFrame)
-        self.entry_LName = RTK.Entry(self.lblFrame)
+        self.customer_value = RTK.StringVar()
+        self.cbNames = RTK.ttk.Combobox(self.lblFrame, textvariable=self.customer_value, width=50)
+        self.cbNames['values'] = cstDB.loadCustomers()
+
+        self.entry_StartDate = RTK.Entry(self.lblFrame)
+        self.entry_EndDate = RTK.Entry(self.lblFrame)
         self.entry_Phone = RTK.Entry(self.lblFrame)
         
-        self.lblFName.grid(row=0, column=0, columnspan=3)
-        self.lblLName.grid(row=0, column=4, columnspan=3)
-        self.lblPhone.grid(row=0, column=9, columnspan=3)
-        self.chkHasRes.grid(row=0, column=14, columnspan=3)
-        self.btnFind.grid(row=0, column=18, columnspan=3)
-        self.btnAddNew.grid(row=0, column=21, columnspan=3)
+        self.lblCust.grid(row=0, column=0)
+        self.lblStartDate.grid(row=0, column=4, columnspan=3)
+        self.lblEndDate.grid(row=0, column=9, columnspan=3)
+#        self.chkHasRes.grid(row=0, column=14, columnspan=3)
+        self.btnFind.grid(row=0, column=12, columnspan=3)
+        self.btnAddNew.grid(row=0, column=15, columnspan=3)
         self.btnReload.grid(row=1, column=14, columnspan=3)
         self.btnDelete.grid(row=1, column=19, columnspan=3)
         
-
-        self.entry_FName.grid(row=1, column=0, columnspan=3)
-        self.entry_LName.grid(row=1, column=4, columnspan=3, padx=3)
-        self.entry_Phone.grid(row=1, column=9, columnspan=3, padx=3)
+        self.cbNames.grid(row=1, column=0, columnspan=3)
+        self.entry_StartDate.grid(row=1, column=4, columnspan=3)
+        self.entry_EndDate.grid(row=1, column=9, columnspan=3, padx=3)
 
         #Set the Tab Order of the Entry boxes
-        self.entry_FName.lift()
-        self.entry_LName.lift()
+        self.entry_StartDate.lift()
+        self.entry_EndDate.lift()
         self.entry_Phone.lift()
         self.btnFind.lift()
         self.btnAddNew.lift()

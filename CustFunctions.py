@@ -62,6 +62,12 @@ class CustFunctions(object):
 
         self.Reload()
 
+    def rentCar(self):
+        print("Insert the Row into the databse....")
+        cus = self.customer_value.get()
+        spacePos = cus.find(' ')
+        print(cus[0:spacePos])
+
     def BuildTreeView(self, results):
         if hasattr(self, 'treeCust'):
             self.treeCust.delete(*self.treeCust.get_children())
