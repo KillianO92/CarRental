@@ -17,11 +17,16 @@ class ResFunctions(object):
             print("Did it Show for Res")
 
     def Reload(self):
-        results = dbRes.loadAllRes()
-        self.BuildTreeView(results)
+        #Clear the existing entry fields
         self.cbNames.set('')
         self.entry_StartDate.delete(0, RTK.END)
         self.entry_EndDate.delete(0, RTK.END)
+
+        #reload the reservations
+        results = dbRes.loadAllRes()
+        self.BuildTreeView(results)
+        
+
     
         print("Reservations reloaded")
 
@@ -87,10 +92,10 @@ class ResFunctions(object):
         else:
             self.treeRes = RTK.ttk.Treeview(self.dataFrame)
             self.treeRes['show']='headings'
-            self.treeRes["columns"] = ("ReservationID","CarID", "CustomerID", "StartDate", "EndDate", "RealStartDate", "RealEndDate")
+            self.treeRes["columns"] = ("ReservationID","Model", "Customer", "StartDate", "EndDate", "RealStartDate", "RealEndDate")
             self.treeRes.column("ReservationID", width=100, anchor=RTK.W)
-            self.treeRes.column("CarID", width=50, anchor=RTK.W)
-            self.treeRes.column("CustomerID", width=100, anchor=RTK.W)
+            self.treeRes.column("Model", width=50, anchor=RTK.W)
+            self.treeRes.column("Customer", width=100, anchor=RTK.W)
             self.treeRes.column("StartDate", width=115, anchor=RTK.W)
             self.treeRes.column("EndDate", width=115, anchor=RTK.W)
             self.treeRes.column("RealStartDate", width=115, anchor=RTK.W)
@@ -98,8 +103,8 @@ class ResFunctions(object):
             #tree.heading("#0", text='ID', anchor='w')
             #tree.column("#0", anchor="w")
             self.treeRes.heading("ReservationID", text=" ReservationID", anchor=RTK.W) #, anchor=TK.W)
-            self.treeRes.heading("CarID", text="Car ID", anchor=RTK.W)
-            self.treeRes.heading("CustomerID", text="Customer ID", anchor=RTK.W)
+            self.treeRes.heading("Model", text="Model", anchor=RTK.W)
+            self.treeRes.heading("Customer", text="Customer", anchor=RTK.W)
             self.treeRes.heading("StartDate", text="Start Date", anchor=RTK.W)
             self.treeRes.heading("EndDate", text="End Date", anchor=RTK.W)
             self.treeRes.heading("RealStartDate", text="Real Start Date", anchor=RTK.W)
@@ -108,13 +113,20 @@ class ResFunctions(object):
             self.treeRes.grid(row=0 ,sticky=RTK.W+RTK.E+RTK.N+RTK.S)
             self.treeRes.pack(side=RTK.LEFT, fill=RTK.BOTH, expand=1)
 
-            for index, dat in enumerate(results):
-                self.treeRes.insert("",index, values=(dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], dat[6]))
+        for index, dat in enumerate(results):
+            self.treeRes.insert("",index, values=(dat[0], dat[1], dat[2], self.FormatDates(dat[3]) , self.FormatDates(dat[4]), self.FormatDates(dat[5]), self.FormatDates(dat[6])))
 
-            #Add the Right Click Event 
-            self.treeRes.bind("<ButtonRelease-3>", self.popup)
+        #Add the Right Click Event 
+        self.treeRes.bind("<ButtonRelease-3>", self.popup)
             
-             
+
+    def FormatDates(self, dateValue):
+         dtElements = dateValue.split("-")
+         dtFormat = ''
+         if len(dtElements) > 1:
+            dtFormat = "{:<2}/{:<2}/{:<4}".format(dtElements[1],dtElements[2],dtElements[0])
+         return dtFormat
+                         
 
     def BuildTabControl(self, object):
         self.root = object

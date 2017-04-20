@@ -1,5 +1,6 @@
 #TODO:  Find out why the import names must be unique
 import tkinter as CRTK
+#from tkinter import messagebox
 from CustDBFunctions import *
 from CarsDBFunctions import *
 from ResDBFunctions import *
@@ -10,6 +11,17 @@ resDB = ResDBFunctions()
 
 class CarReserveDialog(object):
     root = None
+
+    def ResetStartDate(self, event):
+        val = event.widget.get()
+        if val == 'YYYY-MM-DD':
+            self.entryStart.delete(0, CRTK.END)
+            self.entryStart.insert(0, '')
+
+    def ValidateStartDate(self, event):
+        val = event.widget.get()
+        if val == '':
+            print("Please Fix the Start Date")
 
     def __init__(self, parent):
         """
@@ -50,6 +62,8 @@ class CarReserveDialog(object):
         self.entryStart = CRTK.Entry(self.frm)
         self.entryStart.pack(pady=4, padx=4)
         self.entryStart.insert(0, 'YYYY-MM-DD')
+        self.entryStart.bind('<Enter>', self.ResetStartDate)
+        self.entryStart.bind('<FocusOut>', self.ValidateStartDate)
 
         self.lblEnd = CRTK.Label(self.frm, text = 'End Date')
         self.lblEnd.pack(padx=4, pady=4)
