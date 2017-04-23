@@ -15,6 +15,14 @@ baseDB = BaseDBFunctions()
 class NewVehicleDialog(object):
     root = None
 
+    def MakeSelected(self, event):
+        print("You have the selected Make n")
+        make = self.make_value.get()
+        spacePos = make.find(' ')
+        MakeID = make[0:spacePos]
+        self.cbModels['values'] = carDB.loadCarModels(MakeID)
+
+
     def __init__(self):
         """
         msg = <str> the message to be displayed
@@ -26,10 +34,6 @@ class NewVehicleDialog(object):
         self.frm = NVTK.Frame(self.top, borderwidth=4, relief='ridge')
         self.frm.pack(fill='both', expand=True)
 
-
-
-
-
         self.label = NVTK.Label(self.frm, text="Add New Vehicle")
         self.label.pack(padx=4, pady=4)
 
@@ -39,6 +43,7 @@ class NewVehicleDialog(object):
         self.make_value = NVTK.StringVar()
         self.cbMakes = NVTK.ttk.Combobox(self.frm, textvariable=self.make_value, width=50)
         self.cbMakes['values'] = carDB.loadCarMakes()
+        self.cbMakes.bind("<<ComboboxSelected>>", self.MakeSelected)
         self.cbMakes.pack(pady=4, padx=4)
 
 
@@ -114,11 +119,4 @@ class NewVehicleDialog(object):
         #print("MakeID: {}\nModel:{}\nColor: {}".format(MakeID, Model, Color))
         carDB.AddVehicle(self.MakeID, Model, Color)
 
-        
-        
-
-        
-
-
-
-
+ 
