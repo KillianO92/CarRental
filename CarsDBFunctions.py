@@ -30,9 +30,8 @@ class CarsDBFunctions(db.BaseDBFunctions):
         return records
 
     def loadCarModels(self, MakeID):
-        records = super().loadRecords("Select Model from CARS as C INNER JOIN MAKES as M WHERE C.MakeID = M.MakeID")
+        records = super().loadRecords("Select Model from CARS as C INNER JOIN MAKES as M ON C.MakeID = M.MakeID WHERE M.MakeID = {}".format(MakeID))
         return records
 
     def AddVehicle(self, MakeID, Model, Color):
         super().AddNewRecord("INSERT INTO Cars Set MakeID ='{}', Model = '{}', Color = '{}'".format(MakeID, Model, Color))
-                                      
