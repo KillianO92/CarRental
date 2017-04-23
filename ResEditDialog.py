@@ -45,7 +45,7 @@ class ResEditDialog(object):
         self.cbCars = RETK.Label(self.frm, text='List of Cars')
         self.cbCars.pack(padx=4, pady=4)
 
-        self.cbMakes = RETK.ttk.Combobox(self.frm, textvariable=self.customer_value, width=50)
+        self.cbMakes = RETK.ttk.Combobox(self.frm, textvariable=self.customer_value, width=50, state="readonly")
         self.cbMakes['values'] = carDB.loadAllCars()
         self.cbMakes.pack(pady=4, padx=4)
         self.cbMakes.set(carDB.loadCarsByID(self.carID))

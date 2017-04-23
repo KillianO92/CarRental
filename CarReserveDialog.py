@@ -50,7 +50,7 @@ class CarReserveDialog(object):
         #TODO:  Add Combo Box or List Box of Customers to Select from....
         self.customer_value = CRTK.StringVar()
         self.cbpMakes = CRTK.ttk.Labelframe(self.frm, text='List of Car Makes')
-        self.cbMakes = CRTK.ttk.Combobox(self.frm, textvariable=self.customer_value, width=50)
+        self.cbMakes = CRTK.ttk.Combobox(self.frm, textvariable=self.customer_value, width=50,  state="readonly")
         #add the handler to capture when the selected value is changed
         #self.cbMakes.bind("<<ComboboxSelected>>", self.model_selected )
         self.cbMakes['values'] = cstDB.loadCustomers()

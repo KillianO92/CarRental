@@ -91,6 +91,9 @@ class ResFunctions(object):
         selected = self.treeRes.item(curItem)
         self.resID = selected["values"][0]
         dlg = ResEditDialog(self)
+        self.root.wait_window(dlg.top)
+        self.Reload()
+        
 
        
 
@@ -170,7 +173,7 @@ class ResFunctions(object):
         self.btnDelete = RTK.Button(self.lblFrame, text='Delete Reservation', command=self.Delete)
 
         self.customer_value = RTK.StringVar()
-        self.cbNames = RTK.ttk.Combobox(self.lblFrame, textvariable=self.customer_value, width=45)
+        self.cbNames = RTK.ttk.Combobox(self.lblFrame, textvariable=self.customer_value, width=45, state="readonly")
         self.cbNames['values'] = cstDB.loadCustomers()
 
         self.entry_StartDate = RTK.Entry(self.lblFrame)

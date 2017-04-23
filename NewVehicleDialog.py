@@ -41,7 +41,7 @@ class NewVehicleDialog(object):
         self.lblMake.pack(padx=4, pady=4)
 
         self.make_value = NVTK.StringVar()
-        self.cbMakes = NVTK.ttk.Combobox(self.frm, textvariable=self.make_value, width=50)
+        self.cbMakes = NVTK.ttk.Combobox(self.frm, textvariable=self.make_value, width=50, state="readonly")
         self.cbMakes['values'] = carDB.loadCarMakes()
         self.cbMakes.bind("<<ComboboxSelected>>", self.MakeSelected)
         self.cbMakes.pack(pady=4, padx=4)
@@ -56,7 +56,7 @@ class NewVehicleDialog(object):
         self.lblModel.pack(padx=4, pady=4)
 
         self.model_value = NVTK.StringVar()
-        self.cbModels = NVTK.ttk.Combobox(self.frm, textvariable=self.model_value, width=50)
+        self.cbModels = NVTK.ttk.Combobox(self.frm, textvariable=self.model_value, width=50, state="readonly")
         if (MakeID == ''):
             for dat in self.cbModels.get():
                 self.cbModels.set('')
@@ -116,7 +116,6 @@ class NewVehicleDialog(object):
             
         Color = self.entryColor.get()
 
-        #print("MakeID: {}\nModel:{}\nColor: {}".format(MakeID, Model, Color))
         carDB.AddVehicle(self.MakeID, Model, Color)
 
  
