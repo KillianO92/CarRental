@@ -21,3 +21,18 @@ class CarsDBFunctions(db.BaseDBFunctions):
     def loadCarsByID(self, carID):
         records = super().loadRecords("SELECT M.Make, C.Model, C.Color FROM MAKES AS M INNER JOIN CARS AS C ON M.MakeID = C.MakeID WHERE C.CarID = '{}'".format(carID))
         return records
+
+    def UpdateCar(self, Model, Color, CarID):
+        super().AddNewRecord("UPDATE Cars Set Model = '{}', Color = '{}' WHERE CarID = '{}'".format(Model, Color, CarID))
+
+    def loadCarMakes(self):
+        records = super().loadRecords("Select * from Makes ORDER BY MakeID")
+        return records
+
+    def loadCarModels(self, MakeID):
+        records = super().loadRecords("Select Model from CARS as C INNER JOIN MAKES as M WHERE C.MakeID = M.MakeID")
+        return records
+
+    def AddVehicle(self, MakeID, Model, Color):
+        super().AddNewRecord("INSERT INTO Cars Set MakeID ='{}', Model = '{}', Color = '{}'".format(MakeID, Model, Color))
+                                      

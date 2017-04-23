@@ -9,6 +9,7 @@ from TVClass import TVClassExample
 from CustFunctions import *
 from CarsFunctions import *
 from ResFunctions import *
+from NewVehicleDialog import *
 
 #Not sure best way to call these
 dbMk = MakesDBFunctions()
@@ -67,30 +68,30 @@ class MainWindow:
         
     def initMenu(self):
        root.iconbitmap(default='logo.ico')
-       menu = Menu(self.master)
+       menu = Menu(self.master, tearoff=0)
        root.config(menu=menu)
-       filemenu = Menu(menu)
+       filemenu = Menu(menu, tearoff = 0)
        menu.add_cascade(label="File", menu=filemenu)
 
        #build the File -> New Menus
-       filemenuNew = Menu(menu)
-       filemenuNew.add_command(label="Make", command=self.NewFile)
-       filemenuNew.add_command(label="Model", command=self.NewFile)
+       filemenuNew = Menu(menu, tearoff = 0)
+       filemenuNew.add_command(label="Vehicle", command=self.NewVehicle)
        filemenuNew.add_separator()
        filemenuNew.add_command(label="Customer", command=self.NewFile)
        filemenu.add_cascade(label="New", menu=filemenuNew)
        filemenu.add_separator()
        filemenu.add_command(label="Exit", command=root.quit)
-       helpmenu = Menu(menu)
+       helpmenu = Menu(menu, tearoff = 0)
        menu.add_cascade(label="Help", menu=helpmenu)
        helpmenu.add_command(label="About...", command=self.About)
 
 
     def NewFile(self):
         print("THis is a test...")
-        TkC = TVClassExample()
-    def OpenFile(self):
-        print(name)
+
+    def NewVehicle(self):
+        NewVehicleDialog()
+
     def About(self):
         print("This is a program to track and create reservations for vehicles.")
     

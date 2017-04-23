@@ -1,6 +1,7 @@
 import tkinter as CTK
 from CarsDBFunctions import *
 from CarReserveDialog import *
+from CarEditDialog import *
 
 dbCars = CarsDBFunctions()
 
@@ -10,7 +11,6 @@ class CarsFunctions(object):
     
     def popup(self, event):
         try:
-            #TODO figure out how to mark row as selected with either click
             self.treeCars.selection_set(self.treeCars.identify_row(event.y))
             self.cMenu.post(event.x_root, event.y_root)
         finally:
@@ -31,6 +31,14 @@ class CarsFunctions(object):
         self.root.wait_window(dlg.top)
         self.ReloadCars()
         #self.ReserveCar(carID)
+
+    def edit(self):
+        tvSelected = self.treeCars.selection()[0]
+        self.carID = self.treeCars.item(tvSelected, "text")
+        dlg = CarEditDialog(self)
+        self.root.wait_window(dlg.top)
+        self.ReloadCars()
+        
        
 
     def BuildTreeView(self, carResults):
@@ -78,6 +86,7 @@ class CarsFunctions(object):
         self.root = object
         self.cMenu = CTK.Menu(self.root, tearoff=0)
         self.cMenu.add_command(label="Reserve", command=self.reserve)
+        self.cMenu.add_command(label="Edit", command=self.edit)
         carList = dbCars.loadAllCars()
         self.BuildTreeView(carList)
         

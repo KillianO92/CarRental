@@ -81,14 +81,12 @@ class CarReserveDialog(object):
         self.b_OK.pack(padx=4, pady=4) 
 
     def rentCar(self):
-        print("Insert the Row into the databse....")
         cus = self.customer_value.get()
         spacePos = cus.find(' ')
         custID= cus[0:spacePos]
         sDate = self.entryStart.get()
         eDate = self.entryEnd.get()
-        #TODO Figure out why it isn't going to DB
-        print(self.carID ,custID, sDate, eDate)
+        
         resDB.AddNewReservation(self.carID, custID, sDate, eDate)
 
         

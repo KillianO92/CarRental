@@ -49,7 +49,8 @@ class CustFunctions(object):
         selected = self.treeCust.item(curItem)
         self.custID = selected["values"][0]
         dlg = CustEditDialog(self)
-
+        
+        self.root.wait_window(dlg.top)
         self.Reload()
 
 
