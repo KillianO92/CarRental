@@ -15,6 +15,10 @@ class ResDBFunctions(db.BaseDBFunctions):
         records = super().loadRecords("SELECT R.RESERVATIONID , C.MODEL , CT.FIRSTNAME ||' ' || CT.LASTNAME as Customer , R.STARTDATE , R.ENDDATE , ifnull(R.REALSTARTDATE, '') AS REALSTARTDATE , ifnull(R.REALENDDATE, '') AS REALENDDATE FROM Reservations AS R INNER JOIN CARS AS C ON R.CARID = C.CARID INNER JOIN CUSTOMERS AS CT ON R.CUSTOMERID = CT.CUSTOMERID WHERE CT.CustomerID = '{}'".format(custID))
         return records
 
+    def loadRealRes(self, resID):
+        records = super().loadRecords("SELECT * FROM RESERVATIONS WHERE RESERVATIONID = '{}'".format(resID))
+        return records
+
     def loadResBySDate(self,sDate):
         records = super().loadRecords("SELECT R.RESERVATIONID , C.MODEL , CT.FIRSTNAME ||' ' || CT.LASTNAME as Customer , R.STARTDATE , R.ENDDATE , ifnull(R.REALSTARTDATE, '') AS REALSTARTDATE , ifnull(R.REALENDDATE, '') AS REALENDDATE FROM Reservations AS R INNER JOIN CARS AS C ON R.CARID = C.CARID INNER JOIN CUSTOMERS AS CT ON R.CUSTOMERID = CT.CUSTOMERID WHERE StartDate = '{}'".format(sDate))
         return records
@@ -34,5 +38,8 @@ class ResDBFunctions(db.BaseDBFunctions):
     def AddNewReservation(self, carID,  custID, sDate, eDate):
         super().AddNewRecord("INSERT INTO Reservations(CarID, CustomerID, StartDate, EndDate) VALUES('{}', '{}', '{}', '{}')".format(carID, custID, sDate, eDate))
 
+    def UpdateReservation(self, ReservationID, CarID, StartDate, EndDate, RealStartDate, RealEndDate):
+        super().AddNewRecord("UPDATE Reservations Set CarID = '{}', StartDate = '{}', EndDate = '{}', RealStartDate ='{}', RealEndDate = '{}' WHERE ReservationID = '{}'".format(CarID, StartDate, EndDate, RealStartDate, RealEndDate, ReservationID))
+
     def DeleteReservation(self, reservationID):
-        super().loadRecords("DELETE FROM Reservations WHERE ReservationID = '{}'".format(reservationID))
+        super().AddRecords("DELETE FROM Reservations WHERE ReservationID = '{}'".format(reservationID))

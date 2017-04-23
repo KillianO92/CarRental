@@ -26,7 +26,7 @@ class MainWindow:
         self.demoPanel = Frame(master)
         self.initMenu()
         self.demoPanel.pack(side=BOTTOM) #, fill=BOTH, expand=Y)
-
+                    
         master.title("O\'Brien Car Rental")
 
         allModels = dbMk.loadAllMakes()
@@ -47,31 +47,6 @@ class MainWindow:
         self.nb.add(self.tabReservations, text="Reservations")
         #self.nb.add(self.tabVehicles, text="Vehicles")
         self.nb.pack(side=BOTTOM, fill=BOTH, expand=1)
-        
-        #self.lstMakes = Listbox(self.tabVehicles, selectmode=SINGLE, relief=FLAT)
-        #allMakes = dbMk.loadAllMakes()
-        #self.lstMakes.insert(END, "Makes")
-        #self.lstMakes.insert(END, "----------")
-        #self.lstMakes.insert(END, " ")
-        #for m in allMakes:
-        #    self.lstMakes.insert(END, m[1])
-
-        #self.lstMakes.bind('<<ListboxSelect>>', self.lstMakeSelectionChanged)
-        #self.lstMakes.pack(side=LEFT, fill=BOTH, expand=1)
-
-        #self.lstModels = Listbox(self.tabVehicles, selectmode=SINGLE, relief=FLAT)
-        #self.lstModels.insert(END, "Models")
-        #self.lstModels.insert(END, "----------")
-        #self.lstModels.insert(END, " ")
-        
-        #self.lstModels.bind('<<ListboxSelect>>', self.lstModelSelectionChanged)
-        #self.lstModels.pack(side=LEFT, fill=BOTH, expand=1)
-
-        #self.lstDetails = Listbox(self.tabVehicles, selectmode=SINGLE, relief=FLAT)
-        #self.lstDetails.insert(END, "Details")
-        #self.lstDetails.insert(END, "----------")
-        #self.lstDetails.insert(END, " ")
-        #self.lstDetails.pack(side=LEFT, fill=BOTH, expand=1)
 
         self.tabCustomers = CustF.BuildTabControl(self.tabCustomers)
         self.tabVehicles = CarsF.BuildTabControl(self.tabVehicles)
@@ -119,39 +94,6 @@ class MainWindow:
     def About(self):
         print("This is a program to track and create reservations for vehicles.")
     
-    def lstMakeSelectionChanged(self, event):
-        m = event.widget
-        if m.curselection() != '':
-            index = int(m.curselection()[0])
-            value = m.get(index)
-            cars = dbCars.loadCarsByMake(value)
-            self.lstModels.delete(0, END)
-            self.lstModels.insert(END, "Models")
-            self.lstModels.insert(END, "----------")
-            self.lstModels.insert(END, " ")
-            self.lstDetails.delete(0, END)
-            self.lstDetails.insert(END, "Details")
-            self.lstDetails.insert(END, "----------")
-            self.lstDetails.insert(END, " ")
-            for index, dat in enumerate(cars):
-                self.lstModels.insert(END, '{}'.format(dat[1]))
-
-
-
-    def lstModelSelectionChanged(self, event):
-        m = event.widget
-        if m.curselection() != '':
-            index = int(m.curselection()[0])
-            value = m.get(index)
-            cars = dbCars.loadCarsByModel(value)
-            self.lstDetails.delete(0, END)
-            self.lstDetails.insert(END, "Details")
-            self.lstDetails.insert(END, "----------")
-            self.lstDetails.insert(END, " ")
-            self.lstDetails.insert(END, "Colors:\n")
-            for index, dat in enumerate(cars):
-                self.lstDetails.insert(END, "              {}".format(dat[2]))
-            self.lstDetails.insert(END, "Doors: {}".format(dat[1]))
 
 
 

@@ -1,7 +1,10 @@
 import tkinter as TK
 from CustDBFunctions import *
+from CustEditDialog import *
+from ResDBFunctions import *
 
 dbCst = CustDBFunctions()
+dbRes = ResDBFunctions()
 
 
 class CustFunctions(object):
@@ -9,7 +12,7 @@ class CustFunctions(object):
 
     def popup(self, event):
         try:
-            self.treeCust.selection_set(self.treeCust.identify_row(event.y))
+            self.treeCust.selection_set(self.treeCust.identify('item', event.x, event.y))
             self.cMenu.post(event.x_root, event.y_root)
         finally:
             print("Did it Show, cust")
@@ -39,7 +42,17 @@ class CustFunctions(object):
         self.entry_FName.delete(0, TK.END)
         self.entry_LName.delete(0, TK.END)
         self.entry_Phone.delete(0, TK.END)
-    
+
+    #Edit current customer
+    def Edit(self):
+        curItem = self.treeCust.selection()
+        selected = self.treeCust.item(curItem)
+        self.custID = selected["values"][0]
+        dlg = CustEditDialog(self)
+
+        self.Reload()
+
+
     #Add a new Customer
     def AddNewCustomer(self):
         #Get the values from the Entry Controls
@@ -53,20 +66,19 @@ class CustFunctions(object):
         self.Reload()
 
     def Delete(self):
-        curItem = self.treeCust.focus()
+        curItem = self.treeCust.selection()[0]
         selected = self.treeCust.item(curItem)
         custID = selected["values"][0]
-        print(custID)
         dbCst.DeleteCustomer(custID)
-        print('{} was deleted'.format(custID))
 
         self.Reload()
 
-    def rentCar(self):
-        print("Insert the Row into the databse....")
-        cus = self.customer_value.get()
-        spacePos = cus.find(' ')
-        print(cus[0:spacePos])
+    #TODO figure out if I will need this anywhere
+##    def rentCar(self):
+##        cus = self.customer_value.get()
+##        spacePos = cus.find(' ')
+##        print(cus[0:spacePos])
+        
 
     def BuildTreeView(self, results):
         if hasattr(self, 'treeCust'):
@@ -107,6 +119,7 @@ class CustFunctions(object):
         self.root = object
         self.cMenu = TK.Menu(self.root, tearoff=0)
         self.cMenu.add_command(label="Delete", command=self.Delete)
+        self.cMenu.add_command(label="Edit", command=self.Edit)
 
 
         self.topFrame = TK.Frame(self.root, pady=1, padx=0)

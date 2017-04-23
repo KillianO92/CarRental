@@ -1,6 +1,7 @@
 import tkinter as RTK
 from ResDBFunctions import *
 from CustDBFunctions import *
+from ResEditDialog import *
 
 
 dbRes = ResDBFunctions()
@@ -11,7 +12,7 @@ class ResFunctions(object):
 
     def popup(self, event):
         try:
-            self.treeRes.selection_set(self.treeRes.identify_row(event.y))
+            self.treeRes.selection_set(self.treeRes.identify('item', event.x, event.y))
             self.cMenu.post(event.x_root, event.y_root)
         finally:
             print("Did it Show for Res")
@@ -76,7 +77,7 @@ class ResFunctions(object):
         self.BuildTreeView(results)
 
     def Delete(self):
-        curItem = self.treeRes.focus()
+        curItem = self.treeRes.selection()[0]
         selected = self.treeRes.item(curItem)
         resID = selected["values"][0]
         print(resID)
@@ -84,6 +85,13 @@ class ResFunctions(object):
         print('{} was deleted'.format(resID))
 
         self.Reload()
+
+    def Edit(self):
+        curItem = self.treeRes.selection()
+        selected = self.treeRes.item(curItem)
+        self.resID = selected["values"][0]
+        dlg = ResEditDialog(self)
+
        
 
     def BuildTreeView(self, results):
@@ -132,6 +140,7 @@ class ResFunctions(object):
         self.root = object
         self.cMenu = RTK.Menu(self.root, tearoff=0)
         self.cMenu.add_command(label="Delete", command=self.Delete)
+        self.cMenu.add_command(label="Edit", command=self.Edit)
 
 
         self.topFrame = RTK.Frame(self.root, pady=1, padx=0)
@@ -161,16 +170,16 @@ class ResFunctions(object):
         self.btnDelete = RTK.Button(self.lblFrame, text='Delete Reservation', command=self.Delete)
 
         self.customer_value = RTK.StringVar()
-        self.cbNames = RTK.ttk.Combobox(self.lblFrame, textvariable=self.customer_value, width=50)
+        self.cbNames = RTK.ttk.Combobox(self.lblFrame, textvariable=self.customer_value, width=45)
         self.cbNames['values'] = cstDB.loadCustomers()
 
         self.entry_StartDate = RTK.Entry(self.lblFrame)
         self.entry_EndDate = RTK.Entry(self.lblFrame)
         self.entry_Phone = RTK.Entry(self.lblFrame)
         
-        self.lblCust.grid(row=0, column=0)
-        self.lblStartDate.grid(row=0, column=4, columnspan=3)
-        self.lblEndDate.grid(row=0, column=9, columnspan=3)
+        self.lblCust.grid(row=0, column=0, columnspan=3)
+        self.lblStartDate.grid(row=0, column=3, columnspan=3)
+        self.lblEndDate.grid(row=0, column=6, columnspan=3)
 #        self.chkHasRes.grid(row=0, column=14, columnspan=3)
         self.btnFind.grid(row=0, column=12, columnspan=3)
         self.btnAddNew.grid(row=0, column=15, columnspan=3)
@@ -178,8 +187,8 @@ class ResFunctions(object):
         self.btnDelete.grid(row=1, column=19, columnspan=3)
         
         self.cbNames.grid(row=1, column=0, columnspan=3)
-        self.entry_StartDate.grid(row=1, column=4, columnspan=3)
-        self.entry_EndDate.grid(row=1, column=9, columnspan=3, padx=3)
+        self.entry_StartDate.grid(row=1, column=3, columnspan=3)
+        self.entry_EndDate.grid(row=1, column=6, columnspan=3, padx=3)
 
         #Set the Tab Order of the Entry boxes
         self.entry_StartDate.lift()
