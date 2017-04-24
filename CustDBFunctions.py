@@ -26,8 +26,12 @@ class CustDBFunctions(db.BaseDBFunctions):
         records = super().loadRecords("SELECT * FROM Customers WHERE CustomerID = '{}'".format(custID))
         return records
 
-    def loadCustomersByName(self, FistName, LastName):
-        records = super().loadRecords("SELECT * FROM Customers WHERE FirstName LIKE '{}%' AND LastName LIKE '{}%'".format(FistName, LastName))
+    def loadCustomersByName(self, FirstName, LastName):
+        records = super().loadRecords("SELECT * FROM Customers WHERE FirstName LIKE '{}%' AND LastName LIKE '{}%'".format(FirstName, LastName))
+        return records
+
+    def loadCustomerName(self, custID):
+        records = super().loadRecords("SELECT FirstName LastName FROM Customers WHERE CustomerID = '{}'".format(custID))
         return records
 
     def AddNewCustomer(self, FirstName, LastName, Phone):

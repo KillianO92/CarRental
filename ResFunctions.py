@@ -2,13 +2,16 @@ import tkinter as RTK
 from ResDBFunctions import *
 from CustDBFunctions import *
 from ResEditDialog import *
+from AddResDialog import *
 
 
 dbRes = ResDBFunctions()
 cstDB = CustDBFunctions()
+keepGoing = True
 
 class ResFunctions(object):
     pass
+
 
     def popup(self, event):
         try:
@@ -37,15 +40,35 @@ class ResFunctions(object):
         cus = self.customer_value.get()
         spacePos = cus.find(' ')
         print(cus[0:spacePos])
-        custID = cus[0:spacePos]
-        sDate = self.entry_StartDate.get()
-        eDate = self.entry_EndDate.get()
+        self.custID = cus[0:spacePos]
+        if self.custID == '':
+            self.notAllData()
+        elif self.entry_StartDate.get() == '':
+            self.notAllData()
+        elif self.entry_EndDate.get() == '':
+            self.notAllData()
+        else:
+            self.sDate = self.entry_StartDate.get()
+            self.eDate = self.entry_EndDate.get()
+            dlg = AddResDialog(self)
 
-        #need to add a check that the new customer is not already listed
-        dbCst.AddNewCustomer(fName, lName, phone)
+            self.root.wait_window(dlg.top)
+            self.Reload()
 
-        self.Reload()
+    
+    def notAllData(self):
+        self.win = RTK.Toplevel()
+        self.win.wm_title("Data not sufficient")
 
+        self.lblNo = RTK.Label(self.win, text="Not All Fields Entered")
+        self.lblNo.grid(row=0, column=0)
+        self.lblNo2 = RTK.Label(self.win, text="Please set customer, start date, and end date\n\n")
+        self.lblNo2.grid(row=1, column=0)
+
+
+        self.btnOK = RTK.ttk.Button(self.win, text="Okay", command=self.win.destroy)
+        self.btnOK.grid(row=2, column=0)
+        
     def FindRes(self):
         cus = self.customer_value.get()
         spacePos = cus.find(' ')
@@ -137,6 +160,31 @@ class ResFunctions(object):
          if len(dtElements) > 1:
             dtFormat = "{:<2}/{:<2}/{:<4}".format(dtElements[1],dtElements[2],dtElements[0])
          return dtFormat
+
+    def unFormatDates(self, dateValue):
+         dtElements = dateValue.split("-")
+         dtFormat = ''
+         if len(dtElements) > 1:
+            dtFormat = "{:<4}-{:<2}-{:<2}".format(dtElements[0],dtElements[1],dtElements[2])
+         return dtFormat
+
+    def message(self):
+        self.win = RTK.Toplevel()
+        self.win.wm_title("Dates")
+
+        self.lblNo = RTK.Label(self.win, text="Enter Dates as MM-DD-YYYY\n\n")
+        self.lblNo.grid(row=0, column=0)
+
+
+        self.btnOK = RTK.ttk.Button(self.win, text="Okay", command=self.win.destroy)
+        self.btnOK.grid(row=1, column=0)
+
+    def onEnter(self, event):
+        global keepGoing
+        while keepGoing:
+            self.message()
+            keepGoing = False
+        print("Entered")
                          
 
     def BuildTabControl(self, object):
@@ -191,6 +239,8 @@ class ResFunctions(object):
         
         self.cbNames.grid(row=1, column=0, columnspan=3)
         self.entry_StartDate.grid(row=1, column=3, columnspan=3)
+        self.entry_StartDate.bind("<Enter>", self.onEnter)
+
         self.entry_EndDate.grid(row=1, column=6, columnspan=3, padx=3)
 
         #Set the Tab Order of the Entry boxes
